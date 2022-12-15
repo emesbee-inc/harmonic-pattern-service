@@ -1,5 +1,6 @@
 package com.emesbee.capm.harmonicpatternservice.service;
 
+import com.emesbee.capm.harmonicpatternservice.entity.PatternNotification;
 import com.emesbee.capm.harmonicpatternservice.entity.RequestModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -34,9 +36,10 @@ public class ServiceTest {
             .withUsername("sa")
             .withPassword("sa");
     private static final DatabaseDelegate containerDelegate = new JdbcDatabaseDelegate(postgreSQLContainer, "");
+    static RequestModel requestModel = new RequestModel();
+    static PatternNotification patternNotification = new PatternNotification();
     private static UUID testUUID;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    static RequestModel requestModel = new RequestModel();
     @Value("${emesbee.app.jwtSecret}")
     public String jwtSecret;
 
@@ -53,23 +56,39 @@ public class ServiceTest {
     @BeforeAll
     public static void beforeAll() {
         testUUID = UUID.randomUUID();
-        requestModel.setId(testUUID);
-        requestModel.setData(new ArrayList<>());
+        patternNotification.setId(UUID.randomUUID());
+        patternNotification.setPatternname("ajay");
+        List<PatternNotification> list = new ArrayList<>();
+        requestModel.setMsgType("pattern.notification");
+        requestModel.setData(list);
 
     }
+
     @Test
-    void getMessage(){
-       var data = harmonicPatternService.postMessage(requestModel);
+    void getMessage() {
+        var data = harmonicPatternService.postMessage(requestModel);
         Assertions.assertEquals("200", String.valueOf(data.getStatusCodeValue()));
     }
 
     @Test
-    void getMessage_Exception(){
+    void getMessage_Multi_Objects() {
+        List<PatternNotification> list = new ArrayList<>();
+        list.add(patternNotification);
+        list.add(null);
+        list.add(null);
+        requestModel.setData(list);
+        System.out.println(requestModel.toString());
+        var data = harmonicPatternService.postMessage(requestModel);
+        Assertions.assertEquals("200", String.valueOf(data.getStatusCodeValue()));
+    }
+
+    @Test
+    void getMessage_Exception() {
         Exception e1 = new Exception();
         try {
-            harmonicPatternService.postMessage(null);
-        }catch (Exception e){
-            Assertions.assertEquals(e.getMessage(),e1.getMessage());
+            harmonicPatternService.postMessage(requestModel);
+        } catch (Exception e) {
+            Assertions.assertEquals(e.getMessage(), e1.getMessage());
         }
 
     }

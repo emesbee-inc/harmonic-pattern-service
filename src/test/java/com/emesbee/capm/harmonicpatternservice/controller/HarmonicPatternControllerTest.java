@@ -21,11 +21,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.jdbc.JdbcDatabaseDelegate;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +35,6 @@ import java.util.UUID;
 import org.testcontainers.delegate.DatabaseDelegate;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.testcontainers.containers.localstack.LocalStackContainer.Service.SQS;
 
 @Slf4j
 @SpringBootTest
@@ -44,7 +42,7 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class HarmonicPatternServiceTest {
+public class HarmonicPatternControllerTest {
     private static final String baseUrl = "/api/v1/harmonic-pattern";
     private static final String queueName = "test_queue.fifo";
     @Container
@@ -71,9 +69,6 @@ public class HarmonicPatternServiceTest {
     @BeforeAll
     public static void beforeAll() {
         testUUID = UUID.randomUUID();
-        requestModel.setId(testUUID);
-      //  re
-
     }
 
     @Test

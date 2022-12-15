@@ -1,4 +1,5 @@
 {
+  "msg_type": "pattern.notification",
   "data": [{
     "patterntype": "bearish",
     "patternname": "deep crab",
