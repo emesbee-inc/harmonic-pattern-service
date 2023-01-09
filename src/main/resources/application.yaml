@@ -16,7 +16,7 @@ spring:
       ddl-auto: update
 
 server:
-  port: 8084
+  port: 8087
 emesbee:
   app:
     jwtSecret: ${JWT_SECRET}
