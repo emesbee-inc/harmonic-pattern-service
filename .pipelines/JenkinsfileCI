@@ -1,0 +1,97 @@
+properties([pipelineTriggers([githubPush()])])
+
+pipeline {
+    /* specify nodes for executing */
+    agent any
+    tools{
+      jdk 'Java 11'
+    }
+    environment {
+            APP_NAME = "harmonic-pattern-service"
+    }
+
+    stages {
+        stage('Checkout SCM') {
+                steps {
+                      git(credentialsId: 'github', url: "git@github.com:emesbee-inc/${APP_NAME}.git")
+             }
+        }
+        stage('Calculate Git Hash'){
+            steps {
+                script {
+                    env.BUILD_TAG = sh (
+                        script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                    env.ECR_REGISTRY= '333584358732.dkr.ecr.us-west-2.amazonaws.com'
+                    env.IMAGE_NAME = "${APP_NAME}-${BUILD_TAG}"
+                    env.DOCKER_IMAGE = "${ECR_REGISTRY}/apps:${IMAGE_NAME}"
+
+                }
+            }
+        }
+        
+        stage('Build and Test') {
+            steps {
+                sh '''
+                   export CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain emesbee --domain-owner 333584358732 --region us-west-2 --query authorizationToken --output text)
+                   mvn clean install
+                '''
+            }
+        }
+        
+        stage('Build and Push Docker Image '){
+            
+            steps {
+                sh '''
+                    aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                    docker build -t "${DOCKER_IMAGE}" .
+                    docker push "${DOCKER_IMAGE}"
+                '''
+            }
+        }
+        
+        stage('Deploy to Dev') {
+            steps {
+                script {
+                        build job: 'Apps-Deploy-CD-Pipeline',
+                        parameters: [
+                            string(name: 'APP_NAME', value: APP_NAME),
+                            string(name: 'BUILD_TAG', value: IMAGE_NAME),
+                            string(name: 'ENVIRONMENT', value: 'dev')
+                        ]
+                }
+            }
+        }
+
+        stage('Deploy to UAT') {
+            steps {
+                    timeout(time: 36000, unit: "MINUTES") {
+                        input message: 'Do you want to approve the deployment to UAT?', ok: 'Yes'
+                    }
+                script {
+                        build job: 'Apps-Deploy-CD-Pipeline',
+                        parameters: [
+                            string(name: 'APP_NAME', value: APP_NAME),
+                            string(name: 'BUILD_TAG', value: IMAGE_NAME),
+                            string(name: 'ENVIRONMENT', value: 'uat')
+                        ]
+                }
+            }
+        }
+
+        stage('Deploy to Prod') {
+            steps {
+                timeout(time: 36000, unit: "MINUTES") {
+                input message: 'Do you want to approve the deployment to Prod?', ok: 'Yes'
+            }
+            script {
+                    build job: 'Apps-Deploy-CD-Pipeline',
+                    parameters: [
+                            string(name: 'APP_NAME', value: APP_NAME),
+                            string(name: 'BUILD_TAG', value: IMAGE_NAME),
+                            string(name: 'ENVIRONMENT', value: 'prod')
+                        ]
+                    }
+            }
+        }
+    }
+}

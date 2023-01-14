@@ -14,19 +14,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/v1/harmonic-pattern")
 @SuppressFBWarnings("ENTITY_MASS_ASSIGNMENT")
-public class HarmonicPattternController {
+public class HarmonicPatternController {
 
     private final HarmonicPatternService harmonicPatternService;
 
-    public HarmonicPattternController(final HarmonicPatternService harmonicPatternService) {
+    public HarmonicPatternController(final HarmonicPatternService harmonicPatternService) {
         this.harmonicPatternService = harmonicPatternService;
     }
-
 
     @PostMapping("/post-harmonic-data")
     public ResponseEntity<?> postHarmonicData(final @RequestBody RequestModel requestModel) {
         return harmonicPatternService.postMessage(requestModel);
     }
-
 
 }

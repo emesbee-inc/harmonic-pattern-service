@@ -1,0 +1,120 @@
+# Default values for av-cloud-metadata-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+appName: harmonic-pattern-service
+
+image:
+  repository: 333584358732.dkr.ecr.us-west-2.amazonaws.com/apps
+  pullPolicy: Always
+  tag: "harmonic-pattern-service-d9cf2f4"
+
+imagePullSecrets: []
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::333584358732:role/embesbee-eks-cluster-dev-pods"
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8888
+
+ports:
+  - name: http
+    containerPort: 8888
+    protocol: TCP
+
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/group.name: dev-apps
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30" # in seconds
+    alb.ingress.kubernetes.io/healthcheck-path: /harmonic-pattern-service/actuator/health
+    alb.ingress.kubernetes.io/healty-threshold-count: "1"
+    alb.ingress.kubernetes.io/success-codes: 200-404
+    # by default, it will create a listener rule on port 80
+    # you can specify both ports as well like this: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: "3"
+    alb.ingress.kubernetes.io/target-type: 'ip'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:333584358732:certificate/ad858117-50f8-4ada-a273-6125e5719a25
+  enabled: true
+  hosts:
+    - host: api-dev.emesbee.com
+      paths:
+        - path: /harmonic-pattern-service
+          backend:
+            service:
+              name: harmonic-pattern-service
+              port:
+                number: 80
+          pathType: Prefix
+  # tls:
+  #  - secretName:  emesbee-dataops-ingress-certificate
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+#   minReplicas: 1
+#   maxReplicas: 100
+#   targetCPUUtilizationPercentage: 80
+# targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+secretProvider:
+  secretName: hashicorp-server-dev
+  secretsObjects:
+    hashicorptoken: HASHICORP_TOKEN
+volumes:
+  - name: secrets-store01-inline
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: "harmonic-pattern-service"
+
+volumeMounts:
+  - name: secrets-store01-inline
+    mountPath: "/mnt/secrets-store"
+    readOnly: true

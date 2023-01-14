@@ -1,9 +1,16 @@
 spring:
+  application:
+    name: harmonic-pattern-service
+  config:
+    import: ${CONFIG_SERVER_URL}
+  boot:
+    admin:
+      client:
+        url: ${spring-admin-url}
   datasource:
-    url: jdbc:postgresql://${AWS_POSTGRES_DB_HOST}:${AWS_POSTGRES_DB_PORT}/${AWS_POSTGRES_DB_NAME}
-    username: ${AWS_POSTGRES_DB_USERNAME}
-    password: ${AWS_POSTGRES_DB_PASSWORD}
-
+    url: jdbc:postgresql://${aws-postgres-host}:${aws-postgres-port}/${aws-postgres-db-name}
+    username: ${aws-postgres-username}
+    password: ${aws-postgres-password}
   jpa:
     show-sql: true
     properties:
@@ -16,7 +23,8 @@ spring:
       ddl-auto: update
 
 server:
-  port: 8087
+  port: 8080
+
 emesbee:
   app:
-    jwtSecret: ${JWT_SECRET}
+    jwtSecret: ${jwt-secret}
