@@ -33,10 +33,11 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/v3/api-docs/**").permitAll().and()
+                .authorizeRequests().antMatchers("/actuator/health").permitAll().and()
+                .authorizeRequests().antMatchers("/v1/post-harmonic-data").permitAll().and()
                 .authorizeRequests().antMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().authenticated().and()
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }
