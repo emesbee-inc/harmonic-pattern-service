@@ -4,12 +4,12 @@
 
 replicaCount: 1
 
-appName: harmonic-pattern-service
+appName: brokerage-service
 
 image:
   repository: 333584358732.dkr.ecr.us-west-2.amazonaws.com/apps
   pullPolicy: Always
-  tag: "harmonic-pattern-service-d9cf2f4"
+  tag: "brokerage-service-d9cf2f4"
 
 imagePullSecrets: []
 
@@ -65,10 +65,10 @@ ingress:
   hosts:
     - host: api-uat.emesbee.com
       paths:
-        - path: /harmonic-pattern-service
+        - path: /brokerage-service
           backend:
             service:
-              name: harmonic-pattern-service
+              name: brokerage-service
               port:
                 number: 80
           pathType: Prefix
@@ -107,7 +107,7 @@ volumes:
       driver: secrets-store.csi.k8s.io
       readOnly: true
       volumeAttributes:
-        secretProviderClass: "harmonic-pattern-service"
+        secretProviderClass: "brokerage-service"
 
 volumeMounts:
   - name: secrets-store01-inline
