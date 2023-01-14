@@ -117,5 +117,5 @@ volumeMounts:
     readOnly: true
 
 environmentProperties:
-  CONFIG_SERVER_URL: "configserver:http://api-dev.emesbee.com/mercury-config-server/config"
+  CONFIG_SERVER_URL: "configserver:https://api-dev.emesbee.com/mercury-config-server/config"
 
