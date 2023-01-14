@@ -25,7 +25,7 @@ spring:
 server:
   port: 8080
   servlet:
-    context-path: /harmonic-pattern-service
+    context-path: /harmonic-pattern
 
 emesbee:
   app:

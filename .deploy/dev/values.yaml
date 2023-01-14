@@ -9,7 +9,7 @@ appName: harmonic-pattern-service
 image:
   repository: 333584358732.dkr.ecr.us-west-2.amazonaws.com/apps
   pullPolicy: Always
-  tag: "harmonic-pattern-service-d9cf2f4"
+  tag: "harmonic-pattern-serviced9cf2f4"
 
 imagePullSecrets: []
 
@@ -65,10 +65,10 @@ ingress:
   hosts:
     - host: api-dev.emesbee.com
       paths:
-        - path: /harmonic-pattern-service
+        - path: /harmonic-pattern
           backend:
             service:
-              name: harmonic-pattern-service
+              name: harmonic-pattern
               port:
                 number: 80
           pathType: Prefix
@@ -109,7 +109,7 @@ volumes:
       driver: secrets-store.csi.k8s.io
       readOnly: true
       volumeAttributes:
-        secretProviderClass: "harmonic-pattern-service"
+        secretProviderClass: "harmonic-pattern"
 
 volumeMounts:
   - name: secrets-store01-inline
@@ -117,5 +117,5 @@ volumeMounts:
     readOnly: true
 
 environmentProperties:
-  CONFIG_SERVER_URL: "configserver:http://api-dev.emesbee.com/mercury-config-server/config"
+  CONFIG_SERVER_URL: "configserver:https://api-dev.emesbee.com/mercury-config-server/config"
 
