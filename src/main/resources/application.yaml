@@ -1,1 +1,30 @@
+spring:
+  application:
+    name: harmonic-pattern-service
+  config:
+    import: ${CONFIG_SERVER_URL}
+  boot:
+    admin:
+      client:
+        url: ${spring-admin-url}
+  datasource:
+    url: jdbc:postgresql://${aws-postgres-host}:${aws-postgres-port}/${aws-postgres-db-name}
+    username: ${aws-postgres-username}
+    password: ${aws-postgres-password}
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation=: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
 
+server:
+  port: 8080
+
+emesbee:
+  app:
+    jwtSecret: ${jwt-secret}
