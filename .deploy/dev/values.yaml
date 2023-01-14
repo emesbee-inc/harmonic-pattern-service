@@ -118,3 +118,6 @@ volumeMounts:
   - name: secrets-store01-inline
     mountPath: "/mnt/secrets-store"
     readOnly: true
+
+environmentProperties:
+  CONFIG_SERVER_URL: "configserver:http://api-dev.emesbee.com/mercury-config-server/config"
