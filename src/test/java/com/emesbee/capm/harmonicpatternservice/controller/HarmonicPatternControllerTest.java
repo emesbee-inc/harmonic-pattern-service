@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class HarmonicPatternControllerTest {
-    private static final String baseUrl = "/api/v1/harmonic-pattern";
+    private static final String baseUrl = "/v1";
     private static final String queueName = "test_queue.fifo";
     @Container
     public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:13.7")

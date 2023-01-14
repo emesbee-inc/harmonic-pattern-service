@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/api/v1/harmonic-pattern")
+@RequestMapping("/v1")
 @SuppressFBWarnings("ENTITY_MASS_ASSIGNMENT")
 public class HarmonicPatternController {
 
