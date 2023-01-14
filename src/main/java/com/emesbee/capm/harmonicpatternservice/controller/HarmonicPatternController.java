@@ -3,6 +3,7 @@ package com.emesbee.capm.harmonicpatternservice.controller;
 import com.emesbee.capm.harmonicpatternservice.entity.RequestModel;
 import com.emesbee.capm.harmonicpatternservice.service.HarmonicPatternService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,7 @@ public class HarmonicPatternController {
         this.harmonicPatternService = harmonicPatternService;
     }
 
-    @PostMapping("/post-harmonic-data")
+    @PostMapping(value = "/post-harmonic-data", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> postHarmonicData(final @RequestBody RequestModel requestModel) {
         return harmonicPatternService.postMessage(requestModel);
     }
