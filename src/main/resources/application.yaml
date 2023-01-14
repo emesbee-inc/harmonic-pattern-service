@@ -3,10 +3,10 @@ spring:
     name: harmonic-pattern-service
   config:
     import: ${CONFIG_SERVER_URL}
-  boot:
-    admin:
-      client:
-        url: ${spring-admin-url}
+#  boot:
+#    admin:
+#      client:
+#        url: ${spring-admin-url}
   datasource:
     url: jdbc:postgresql://${aws-postgres-host}:${aws-postgres-port}/${aws-postgres-db-name}
     username: ${aws-postgres-username}
