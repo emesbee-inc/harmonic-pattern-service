@@ -23,7 +23,7 @@ spring:
       ddl-auto: update
 
 server:
-  port: 8181
+  port: 8080
   servlet:
     context-path: /harmonic-pattern-service
 
