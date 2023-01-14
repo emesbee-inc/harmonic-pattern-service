@@ -41,11 +41,11 @@ securityContext:
 service:
   type: ClusterIP
   port: 80
-  targetPort: 8888
+  targetPort: 8080
 
 ports:
   - name: http
-    containerPort: 8888
+    containerPort: 8080
     protocol: TCP
 
 ingress:
@@ -53,9 +53,8 @@ ingress:
     alb.ingress.kubernetes.io/group.name: dev-apps
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30" # in seconds
-    alb.ingress.kubernetes.io/healthcheck-path: /harmonic-pattern-service/actuator/health
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
     alb.ingress.kubernetes.io/healty-threshold-count: "1"
-    alb.ingress.kubernetes.io/success-codes: 200-404
     # by default, it will create a listener rule on port 80
     # you can specify both ports as well like this: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
@@ -102,10 +101,8 @@ tolerations: []
 
 affinity: {}
 
-secretProvider:
-  secretName: hashicorp-server-dev
-  secretsObjects:
-    hashicorptoken: HASHICORP_TOKEN
+secretProvider: {}
+
 volumes:
   - name: secrets-store01-inline
     csi:
@@ -121,3 +118,4 @@ volumeMounts:
 
 environmentProperties:
   CONFIG_SERVER_URL: "configserver:http://api-dev.emesbee.com/mercury-config-server/config"
+

@@ -41,17 +41,20 @@ securityContext:
 service:
   type: ClusterIP
   port: 80
-  targetPort: 8888
+  targetPort: 8080
 
 ports:
   - name: http
-    containerPort: 8888
+    containerPort: 8080
     protocol: TCP
 
 ingress:
   annotations:
     alb.ingress.kubernetes.io/group.name: uat-apps
     alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30" # in seconds
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/healty-threshold-count: "1"
     # by default, it will create a listener rule on port 80
     # you can specify both ports as well like this: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
@@ -98,10 +101,6 @@ tolerations: []
 
 affinity: {}
 
-secretProvider:
-  secretName: hashicorp-server-dev
-  secretsObjects:
-    hashicorptoken: HASHICORP_TOKEN
 volumes:
   - name: secrets-store01-inline
     csi:
