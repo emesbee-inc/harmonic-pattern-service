@@ -23,7 +23,7 @@ public class HarmonicPatternController {
         this.harmonicPatternService = harmonicPatternService;
     }
 
-    @PostMapping(value = "/post-harmonic-data", consumes = MediaType.ALL_VALUE)
+    @PostMapping(value = "/post-harmonic-data", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<?> postHarmonicData(final @RequestBody RequestModel requestModel) {
         return harmonicPatternService.postMessage(requestModel);
     }
